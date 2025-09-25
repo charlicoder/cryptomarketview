@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppDispatch, useAppSelector } from '@/lib/hooks'
 import { toggleTheme } from '@/store/slices/themeSlice'
+import Link from 'next/link'
 
 interface HeaderProps {
   onSearch: (query: string) => void
@@ -31,9 +32,9 @@ export default function Header({ onSearch }: HeaderProps) {
             </div>
             <span className="text-xl font-semibold text-gray-900 dark:text-white">CryptoView</span>
           </div>
-          <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white px-4">
+          <Link href={"/dashboard"} size="lg" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
             Dashboard
-          </Button>
+          </Link>
         </div>
 
         <div className="flex items-center space-x-4">

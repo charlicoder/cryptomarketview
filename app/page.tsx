@@ -129,9 +129,6 @@ export default function Home() {
                     onSort={handleSort}
                 />
 
-                {/* Quick Actions */}
-                <QuickActions />
-
                 {/* Footer */}
                 <footer className="text-center py-6">
                     <div className="flex items-center justify-center space-x-2 text-gray-500 dark:text-gray-400">

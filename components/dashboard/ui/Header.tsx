@@ -58,7 +58,7 @@ const HeaderPage = ({ onSearch, searchQuery = '', className = '' }) => {
   };
 
   const handleLogoClick = () => {
-    router.push('/cryptocurrency-dashboard'); // Use router.push for navigation
+    router.push('/'); // Use router.push for navigation
     setSearchValue('');
     if (onSearch) {
       onSearch('');
@@ -72,13 +72,13 @@ const HeaderPage = ({ onSearch, searchQuery = '', className = '' }) => {
   const navigationItems = [
     {
       label: 'Dashboard',
-      path: '/cryptocurrency-dashboard',
+      path: '/dashboard',
       icon: 'BarChart3',
     },
   ];
 
   // Use pathname for active path check
-  const isActivePath = (path) => {
+  const isActivePath = (path: string) => {
     return pathname === path;
   };
 
