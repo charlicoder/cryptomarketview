@@ -52,269 +52,342 @@ export default function CoinDetailModal({ coin, isOpen, onClose }: CoinDetailMod
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className={`max-w-5xl max-h-[90vh] overflow-y-auto p-0 ${isDark
+        className={`w-full max-w-4xl h-[90vh] max-h-[800px] p-0 overflow-hidden ${
+          isDark
             ? 'bg-slate-800 border-slate-700 text-white'
             : 'bg-white border-gray-200 text-gray-900'
-          }`}
+        }`}
+        showCloseButton={true}
       >
-        {/* Header */}
-        <div
-          className={`flex items-center p-6 border-b ${isDark ? 'border-slate-700' : 'border-gray-200'
+        {/* Scrollable Content Container */}
+        <div className="flex flex-col h-full">
+          {/* Fixed Header */}
+          <div
+            className={`flex-shrink-0 flex items-center justify-between p-4 sm:p-6 border-b ${
+              isDark ? 'border-slate-700' : 'border-gray-200'
             }`}
-        >
-          <div className="flex items-center space-x-3">
-            <Image
-              src={coin.image}
-              alt={coin.name}
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <div>
-              <DialogTitle
-                className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'
+          >
+            <div className="flex items-center space-x-3 min-w-0">
+              <div className="flex-shrink-0">
+                <Image
+                  src={coin.image}
+                  alt={coin.name}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="min-w-0">
+                <DialogTitle
+                  className={`text-lg font-semibold truncate ${
+                    isDark ? 'text-white' : 'text-gray-900'
                   }`}
-              >
-                {coin.name}
-              </DialogTitle>
-              <DialogDescription
-                className={`text-xs uppercase font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'
+                >
+                  {coin.name}
+                </DialogTitle>
+                <DialogDescription
+                  className={`text-xs uppercase font-medium ${
+                    isDark ? 'text-slate-400' : 'text-gray-500'
                   }`}
-              >
-                {coin.symbol}
-              </DialogDescription>
-            </div>
-          </div>
-        </div>
-
-        {/* Body */}
-        <div className="p-6 space-y-8">
-          {/* Price Stats */}
-          <div className="grid grid-cols-3 gap-6">
-            <div
-              className={`rounded-lg p-4 border ${isDark
-                  ? 'bg-slate-700/50 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <p
-                className={`text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-gray-500'
-                  }`}
-              >
-                Current Price
-              </p>
-              <p
-                className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'
-                  }`}
-              >
-                {formatPrice(coin.current_price)}
-              </p>
-            </div>
-            <div
-              className={`rounded-lg p-4 border ${isDark
-                  ? 'bg-slate-700/50 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <p
-                className={`text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-gray-500'
-                  }`}
-              >
-                24h Change
-              </p>
-              <p
-                className={`text-2xl font-bold ${coin.price_change_percentage_24h >= 0
-                    ? 'text-green-500'
-                    : 'text-red-500'
-                  }`}
-              >
-                {coin.price_change_percentage_24h >= 0 ? '+' : ''}
-                {coin.price_change_percentage_24h?.toFixed(2) || '0.00'}%
-              </p>
-            </div>
-            <div
-              className={`rounded-lg p-4 border ${isDark
-                  ? 'bg-slate-700/50 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <p
-                className={`text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-gray-500'
-                  }`}
-              >
-                Market Cap
-              </p>
-              <p
-                className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'
-                  }`}
-              >
-                {formatNumber(coin.market_cap)}
-              </p>
-            </div>
-          </div>
-
-          {/* Chart Section */}
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3
-                className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'
-                  }`}
-              >
-                Price Chart
-              </h3>
-              <div
-                className={`flex rounded-lg p-1 ${isDark ? 'bg-slate-700/50' : 'bg-gray-100'
-                  }`}
-              >
-                {timeframes.map(({ label, days }) => (
-                  <button
-                    key={days}
-                    onClick={() => setSelectedTimeframe(days)}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${selectedTimeframe === days
-                        ? isDark
-                          ? 'bg-slate-600 text-white'
-                          : 'bg-slate-800 text-white'
-                        : isDark
-                          ? 'text-slate-400 hover:text-white'
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                  >
-                    {label}
-                  </button>
-                ))}
+                >
+                  {coin.symbol}
+                </DialogDescription>
               </div>
             </div>
-            <div
-              className={`h-80 rounded-lg border ${isDark
-                  ? 'bg-slate-700/30 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <PriceChart
-                data={chartData?.prices || []}
-                loading={chartLoading}
-                timeframe={selectedTimeframe}
-              />
-            </div>
           </div>
 
-          {/* Additional Stats */}
-          <div className="grid grid-cols-4 gap-4">
-            <div
-              className={`rounded-lg p-4 text-center border ${isDark
-                  ? 'bg-slate-700/50 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <p
-                className={`text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-gray-500'
+          {/* Scrollable Body */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-4 sm:p-6 space-y-6">
+              {/* Price Stats */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                  className={`rounded-lg p-4 border ${
+                    isDark
+                      ? 'bg-slate-700/50 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
                   }`}
-              >
-                Rank
-              </p>
-              <p
-                className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'
+                >
+                  <p
+                    className={`text-sm mb-2 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}
+                  >
+                    Current Price
+                  </p>
+                  <p
+                    className={`text-xl sm:text-2xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {formatPrice(coin.current_price)}
+                  </p>
+                </div>
+                <div
+                  className={`rounded-lg p-4 border ${
+                    isDark
+                      ? 'bg-slate-700/50 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
                   }`}
-              >
-                #{coin.market_cap_rank}
-              </p>
-            </div>
-            <div
-              className={`rounded-lg p-4 text-center border ${isDark
-                  ? 'bg-slate-700/50 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <p
-                className={`text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-gray-500'
+                >
+                  <p
+                    className={`text-sm mb-2 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}
+                  >
+                    24h Change
+                  </p>
+                  <p
+                    className={`text-xl sm:text-2xl font-bold ${
+                      coin.price_change_percentage_24h >= 0
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                    }`}
+                  >
+                    {coin.price_change_percentage_24h >= 0 ? '+' : ''}
+                    {coin.price_change_percentage_24h?.toFixed(2) || '0.00'}%
+                  </p>
+                </div>
+                <div
+                  className={`rounded-lg p-4 border sm:col-span-2 lg:col-span-1 ${
+                    isDark
+                      ? 'bg-slate-700/50 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
                   }`}
-              >
-                Volume 24h
-              </p>
-              <p
-                className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'
-                  }`}
-              >
-                {formatNumber(coin.total_volume)}
-              </p>
-            </div>
-            <div
-              className={`rounded-lg p-4 text-center border ${isDark
-                  ? 'bg-slate-700/50 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <p
-                className={`text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-gray-500'
-                  }`}
-              >
-                High 24h
-              </p>
-              <p
-                className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'
-                  }`}
-              >
-                {formatPrice(coin.high_24h)}
-              </p>
-            </div>
-            <div
-              className={`rounded-lg p-4 text-center border ${isDark
-                  ? 'bg-slate-700/50 border-slate-600'
-                  : 'bg-gray-50 border-gray-200'
-                }`}
-            >
-              <p
-                className={`text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-gray-500'
-                  }`}
-              >
-                Low 24h
-              </p>
-              <p
-                className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'
-                  }`}
-              >
-                {formatPrice(coin.low_24h)}
-              </p>
-            </div>
-          </div>
+                >
+                  <p
+                    className={`text-sm mb-2 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}
+                  >
+                    Market Cap
+                  </p>
+                  <p
+                    className={`text-xl sm:text-2xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {formatNumber(coin.market_cap)}
+                  </p>
+                </div>
+              </div>
 
-          {/* Action Buttons */}
-          <div className="grid grid-cols-3 gap-4">
-            <Button
-              className={`font-medium py-3 ${isDark
-                  ? 'bg-white text-slate-800 hover:bg-slate-100'
-                  : 'bg-slate-800 text-white hover:bg-slate-700'
-                }`}
-            >
-              <Star className="h-4 w-4 mr-2" />
-              Add to Watchlist
-            </Button>
-            <Button
-              variant="outline"
-              className={`font-medium py-3 ${isDark
-                  ? 'border-slate-600 text-white hover:bg-slate-700'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                }`}
-              onClick={() =>
-                window.open(
-                  `https://www.coingecko.com/en/coins/${coin.id}`,
-                  '_blank'
-                )
-              }
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              View on CoinGecko
-            </Button>
-            <Button
-              variant="outline"
-              className={`font-medium py-3 ${isDark
-                  ? 'border-slate-600 text-white hover:bg-slate-700'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                }`}
-            >
-              <Share2 className="h-4 w-4 mr-2" />
-              Share
-            </Button>
+              {/* Chart Section */}
+              <div>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                  <h3
+                    className={`text-lg sm:text-xl font-semibold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    Price Chart
+                  </h3>
+                  <div
+                    className={`flex flex-wrap gap-1 rounded-lg p-1 ${
+                      isDark ? 'bg-slate-700/50' : 'bg-gray-100'
+                    }`}
+                  >
+                    {timeframes.map(({ label, days }) => (
+                      <button
+                        key={days}
+                        onClick={() => setSelectedTimeframe(days)}
+                        className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                          selectedTimeframe === days
+                            ? isDark
+                              ? 'bg-slate-600 text-white'
+                              : 'bg-slate-800 text-white'
+                            : isDark
+                            ? 'text-slate-400 hover:text-white hover:bg-slate-600/50'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div
+                  className={`h-64 sm:h-80 rounded-lg border ${
+                    isDark
+                      ? 'bg-slate-700/30 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  <PriceChart
+                    data={chartData?.prices || []}
+                    loading={chartLoading}
+                    timeframe={selectedTimeframe}
+                  />
+                </div>
+              </div>
+
+              {/* Additional Stats */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div
+                  className={`rounded-lg p-3 sm:p-4 text-center border ${
+                    isDark
+                      ? 'bg-slate-700/50 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  <p
+                    className={`text-xs sm:text-sm mb-1 sm:mb-2 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}
+                  >
+                    Rank
+                  </p>
+                  <p
+                    className={`text-lg sm:text-xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    #{coin.market_cap_rank}
+                  </p>
+                </div>
+                <div
+                  className={`rounded-lg p-3 sm:p-4 text-center border ${
+                    isDark
+                      ? 'bg-slate-700/50 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  <p
+                    className={`text-xs sm:text-sm mb-1 sm:mb-2 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}
+                  >
+                    Volume 24h
+                  </p>
+                  <p
+                    className={`text-lg sm:text-xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {formatNumber(coin.total_volume)}
+                  </p>
+                </div>
+                <div
+                  className={`rounded-lg p-3 sm:p-4 text-center border ${
+                    isDark
+                      ? 'bg-slate-700/50 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  <p
+                    className={`text-xs sm:text-sm mb-1 sm:mb-2 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}
+                  >
+                    High 24h
+                  </p>
+                  <p
+                    className={`text-lg sm:text-xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {formatPrice(coin.high_24h)}
+                  </p>
+                </div>
+                <div
+                  className={`rounded-lg p-3 sm:p-4 text-center border ${
+                    isDark
+                      ? 'bg-slate-700/50 border-slate-600'
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  <p
+                    className={`text-xs sm:text-sm mb-1 sm:mb-2 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}
+                  >
+                    Low 24h
+                  </p>
+                  <p
+                    className={`text-lg sm:text-xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {formatPrice(coin.low_24h)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <Button
+                  className={`font-medium py-3 ${
+                    isDark
+                      ? 'bg-white text-slate-800 hover:bg-slate-100'
+                      : 'bg-slate-800 text-white hover:bg-slate-700'
+                  }`}
+                >
+                  <Star className="h-4 w-4 mr-2" />
+                  Add to Watchlist
+                </Button>
+                <Button
+                  variant="outline"
+                  className={`font-medium py-3 ${
+                    isDark
+                      ? 'border-slate-600 text-white hover:bg-slate-700'
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() =>
+                    window.open(
+                      `https://www.coingecko.com/en/coins/${coin.id}`,
+                      '_blank'
+                    )
+                  }
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">View on CoinGecko</span>
+                  <span className="sm:hidden">CoinGecko</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  className={`font-medium py-3 ${
+                    isDark
+                      ? 'border-slate-600 text-white hover:bg-slate-700'
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+              </div>
+
+              {/* VANRY Description */}
+              {coin.symbol.toLowerCase() === 'vanry' && (
+                <div
+                  className={`rounded-lg p-4 sm:p-6 border ${
+                    isDark
+                      ? 'bg-slate-700/30 border-slate-600'
+                      : 'bg-blue-50 border-blue-200'
+                  }`}
+                >
+                  <h3
+                    className={`text-lg font-semibold mb-3 ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    About VANRY
+                  </h3>
+                  <p
+                    className={`text-sm leading-relaxed ${
+                      isDark ? 'text-slate-300' : 'text-gray-700'
+                    }`}
+                  >
+                    VANRY is a cutting-edge blockchain platform designed to revolutionize 
+                    decentralized finance and digital asset management. Built with advanced 
+                    security protocols and scalable infrastructure, VANRY offers users seamless 
+                    trading experiences and innovative DeFi solutions. The platform focuses on 
+                    providing high-performance transactions with minimal fees, making it an 
+                    attractive option for both retail and institutional investors in the 
+                    cryptocurrency space.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </DialogContent>
