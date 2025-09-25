@@ -3,12 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Icon from '@/components/dashboard/AppIcon';
 import { Button } from './button';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'; // Import Next.js navigation hooks
+import { useRouter, usePathname } from 'next/navigation'; // Removed useSearchParams
 
 const Header = ({ onSearch, searchQuery = '', className = '' }) => {
     const router = useRouter(); // Use useRouter hook from next/navigation
     const pathname = usePathname(); // Use usePathname hook for current path
-    const searchParams = useSearchParams(); // Use useSearchParams for query parameters
 
     const [isDark, setIsDark] = useState(false);
     const [searchValue, setSearchValue] = useState(searchQuery);
@@ -34,7 +33,7 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
         document.documentElement?.classList?.toggle('dark', newTheme);
     };
 
-    const handleSearchChange = (e) => {
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e?.target?.value;
         setSearchValue(value);
         if (onSearch) {
@@ -42,19 +41,16 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
         }
     };
 
-    const handleSearchSubmit = (e) => {
+    const handleSearchSubmit = (e: React.FormEvent) => {
         e?.preventDefault();
-        // Use pathname to check the current route
         if (searchValue?.trim() && pathname !== '/search-results') {
-            // Use router.push for navigation and pass query as state (though Next.js prefers params for this)
-            // For passing state, you might consider using searchParams or a different approach
             router.push(`/search-results?query=${searchValue.trim()}`);
         }
         setIsMobileSearchOpen(false);
     };
 
     const handleLogoClick = () => {
-        router.push('/cryptocurrency-dashboard'); // Use router.push for navigation
+        router.push('/cryptocurrency-dashboard');
         setSearchValue('');
         if (onSearch) {
             onSearch('');
@@ -73,8 +69,7 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
         }
     ];
 
-    // Use pathname for active path check
-    const isActivePath = (path) => {
+    const isActivePath = (path: string) => {
         return pathname === path;
     };
 
@@ -105,7 +100,7 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
                                 {navigationItems?.map((item) => (
                                     <button
                                         key={item?.path}
-                                        onClick={() => router.push(item?.path)} // Use router.push for navigation
+                                        onClick={() => router.push(item?.path)}
                                         className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 focus-ring ${isActivePath(item?.path)
                                             ? 'bg-accent text-accent-foreground shadow-elevation-1'
                                             : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -176,6 +171,7 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
                     </div>
                 </div>
             </header>
+
             {/* Mobile Search Overlay */}
             {isMobileSearchOpen && (
                 <div className="fixed inset-0 z-50 md:hidden">
@@ -210,6 +206,7 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
                     </div>
                 </div>
             )}
+
             {/* Spacer for fixed header */}
             <div className="h-16" />
         </>

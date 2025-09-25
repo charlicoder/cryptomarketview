@@ -5,8 +5,6 @@ import { TrendingUp, DollarSign, BarChart3, Activity } from 'lucide-react'
 import Header from '@/components/Header'
 import StatCard from '@/components/StatCard'
 import CryptoTable from '@/components/CryptoTable'
-import QuickActions from '@/components/QuickActions'
-import { Badge } from '@/components/ui/badge'
 import { useGetCryptocurrenciesQuery, useGetGlobalStatsQuery } from '@/store/services/cryptoApi'
 import { useAppSelector } from '@/lib/hooks'
 

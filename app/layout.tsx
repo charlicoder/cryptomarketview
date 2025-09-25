@@ -1,7 +1,7 @@
 
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import StoreProvider from '@/providers/StoreProvider'
 import ThemeProvider from '@/providers/ThemeProvider'
 import ScrollToTop from '@/components/dashboard/ScrollToTop';

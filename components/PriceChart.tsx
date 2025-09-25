@@ -68,20 +68,25 @@ export default function PriceChart({ data, loading, timeframe }: PriceChartProps
                 <Tooltip
                     content={({ active, payload, label }) => {
                         if (active && payload && payload.length) {
+                            // Safely handle undefined label
+                            const dateLabel =
+                                label !== undefined && label !== null
+                                    ? new Date(label).toLocaleDateString()
+                                    : 'N/A';
+
                             return (
                                 <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600">
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                                        {new Date(label).toLocaleDateString()}
-                                    </p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-300">{dateLabel}</p>
                                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                                         Price: {formatPrice(payload[0].value as number)}
                                     </p>
                                 </div>
-                            )
+                            );
                         }
-                        return null
+                        return null;
                     }}
                 />
+
                 <Line
                     type="monotone"
                     dataKey="price"

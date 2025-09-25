@@ -1,48 +1,37 @@
-'use client'; // Required for client components that use hooks like useState, useEffect, etc.
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'; // Import Next.js navigation hooks
-
-import Header from '@/components/dashboard/ui/Header'; // Assuming Header is a reusable component
-import SearchInterface from '@/components/dashboard/ui/SearchInterface'; // Assuming SearchInterface is a reusable component
-import CryptoTable from '@/components/dashboard/CryptoTable'; // Assuming CryptoTable is a reusable component
-import CryptoMobileCard from '@/components/dashboard/CryptoMobileCard'; // Assuming CryptoMobileCard is a reusable component
-import MarketStats from '@/components/dashboard/MarketStats'; // Assuming MarketStats is a reusable component
-import CoinDetailModal from '@/components/dashboard/CoinDetailModal'; // Assuming CoinDetailModal is a reusable component
-import Icon from '@/components/dashboard/AppIcon'; // Assuming AppIcon is a reusable component
-import Button from '@/components/dashboard/ui/Button'; // Assuming Button is a reusable component
-import { useGetCryptocurrenciesQuery, useGetGlobalStatsQuery } from '@/store/services/cryptoApi'
+import React, { useState, useEffect } from 'react'
+import Header from '@/components/dashboard/ui/Header'
+import SearchInterface from '@/components/dashboard/ui/SearchInterface'
+import CryptoTable from '@/components/dashboard/CryptoTable'
+// import CryptoMobileCard from '@/components/dashboard/CryptoMobileCard' // Removed unused import
+import CoinDetailModal from '@/components/dashboard/CoinDetailModal'
+import Icon from '@/components/dashboard/AppIcon'
+import Button from '@/components/dashboard/ui/Button'
+import { useGetCryptocurrenciesQuery } from '@/store/services/cryptoApi'
 import { useAppSelector } from '@/lib/hooks'
 
-
 const CryptocurrencyDashboardPage = () => {
-    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('')
     const [sortBy, setSortBy] = useState('market_cap_desc')
     const isDark = useAppSelector((state) => state.theme.isDark)
-    const [sortConfig, setSortConfig] = useState({ key: 'market_cap_rank', direction: 'asc' });
-    const [selectedCoin, setSelectedCoin] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: 'market_cap_rank', direction: 'asc' })
+    const [selectedCoin, setSelectedCoin] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [filters, setFilters] = useState({
         sortBy: 'market_cap',
         order: 'desc',
-        category: 'all'
-    });
-
-    const {
-        data: cryptocurrencies,
-        isLoading: cryptosLoading,
-        refetch: refetchCryptos
-    } = useGetCryptocurrenciesQuery({
-        search: searchQuery,
-        sortBy
+        category: 'all',
     })
 
     const {
-        data: globalStats,
-        isLoading: globalLoading
-    } = useGetGlobalStatsQuery()
+        data: cryptocurrencies,
+        isLoading,
+        refetch: refetchCryptos,
+    } = useGetCryptocurrenciesQuery({
+        search: searchQuery,
+        sortBy,
+    })
 
     useEffect(() => {
         if (isDark) {
@@ -61,49 +50,33 @@ const CryptocurrencyDashboardPage = () => {
         return () => clearInterval(interval)
     }, [refetchCryptos])
 
-    const handleSearch = (query: string) => {
-        setSearchQuery(query)
-    }
+    const handleSearch = (query) => setSearchQuery(query)
 
-    const handleRefresh = () => {
-        refetchCryptos()
-    }
+    const handleRefresh = () => refetchCryptos()
 
-    const handleSort = (newSortBy: string) => {
-        setSortBy(newSortBy)
-    }
+    const handleSort = (newSortBy) => setSortBy(newSortBy)
 
     const handleCoinClick = (coin) => {
-        setSelectedCoin(coin);
-        setIsModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-        setSelectedCoin(null);
-    };
-
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
-        // Convert filter format to sort config
-        setSortConfig({
-            key: newFilters?.sortBy === 'market_cap' ? 'market_cap' : newFilters?.sortBy,
-            direction: newFilters?.order
-        });
-    };
-
-    const formatNumber = (num: number) => {
-        if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`
-        if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`
-        if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`
-        return `$${num?.toFixed(2) || '0.00'}`
+        setSelectedCoin(coin)
+        setIsModalOpen(true)
     }
 
-    const vanryCoin = cryptocurrencies?.find(coin => coin.symbol.toLowerCase() === 'vanry')
+    const handleModalClose = () => {
+        setIsModalOpen(false)
+        setSelectedCoin(null)
+    }
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters)
+        setSortConfig({
+            key: newFilters?.sortBy === 'market_cap' ? 'market_cap' : newFilters?.sortBy,
+            direction: newFilters?.order,
+        })
+    }
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Header Component - Assumes Header handles its own navigation logic */}
+            {/* Header */}
             <Header onSearch={handleSearch} searchQuery={searchQuery} />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -130,7 +103,7 @@ const CryptocurrencyDashboardPage = () => {
                         </Button>
                     </div>
 
-                    {/* Featured Badge for VANRY */}
+                    {/* Featured Badge */}
                     <div className="glass rounded-lg p-4 mb-6 border border-accent/30 shadow-md">
                         <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center border border-accent/30">
@@ -161,35 +134,21 @@ const CryptocurrencyDashboardPage = () => {
 
                 {/* Cryptocurrency List */}
                 <div className="mb-8">
-                    {isMobile ? (
-                        <CryptoMobileCard
-                            cryptocurrencies={cryptocurrencies}
-                            onCoinClick={handleCoinClick}
-                            isLoading={isLoading}
-                            searchQuery={searchQuery}
-                        />
-                    ) : (
-                        <CryptoTable
-                            cryptocurrencies={cryptocurrencies}
-                            onCoinClick={handleCoinClick}
-                            isLoading={"false"}
-                            searchQuery={searchQuery}
-                            sortConfig={sortConfig}
-                            onSort={handleSort}
-                        />
-                    )}
+                    <CryptoTable
+                        cryptocurrencies={cryptocurrencies}
+                        onCoinClick={handleCoinClick}
+                        isLoading={isLoading}
+                        searchQuery={searchQuery}
+                        sortConfig={sortConfig}
+                        onSort={handleSort}
+                    />
                 </div>
-
             </main>
 
             {/* Coin Detail Modal */}
-            <CoinDetailModal
-                isOpen={isModalOpen}
-                onClose={handleModalClose}
-                coin={selectedCoin}
-            />
+            <CoinDetailModal isOpen={isModalOpen} onClose={handleModalClose} coin={selectedCoin} />
 
-            {/* Footer - Assuming Footer is a reusable component */}
+            {/* Footer */}
             <footer className="border-t border-border/40 mt-16 bg-card/20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex items-center justify-between">
@@ -206,7 +165,7 @@ const CryptocurrencyDashboardPage = () => {
                 </div>
             </footer>
         </div>
-    );
-};
+    )
+}
 
-export default CryptocurrencyDashboardPage;
+export default CryptocurrencyDashboardPage

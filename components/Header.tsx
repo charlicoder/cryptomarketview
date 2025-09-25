@@ -32,7 +32,7 @@ export default function Header({ onSearch }: HeaderProps) {
             </div>
             <span className="text-xl font-semibold text-gray-900 dark:text-white">CryptoView</span>
           </div>
-          <Link href={"/dashboard"} size="lg" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
+          <Link href={"/dashboard"} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
             Dashboard
           </Link>
         </div>

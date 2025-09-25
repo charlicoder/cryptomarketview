@@ -78,7 +78,7 @@ const HeaderPage = ({ onSearch, searchQuery = '', className = '' }) => {
   ];
 
   // Use pathname for active path check
-  const isActivePath = (path: string) => {
+  const isActivePath = (path) => {
     return pathname === path;
   };
 
