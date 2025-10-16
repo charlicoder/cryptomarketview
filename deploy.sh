@@ -1,37 +1,32 @@
 #!/bin/bash
 
-# ==== CONFIGURATION ====
 APP_NAME="cryptomarketview"
-IMAGE_NAME="cryptomarketview-image"
-PORT=3000
+PORT=3001
 
-# ==== STEP 1: Stop and remove old container if running ====
-echo "Checking for existing container: $APP_NAME..."
+echo "-----------------------------"
+echo "Deploying $APP_NAME on port $PORT"
+echo "-----------------------------"
 
-if [ "$(docker ps -q -f name=$APP_NAME)" ]; then
-    echo "Stopping running container..."
-    docker stop $APP_NAME
-fi
+# Step 1: Pull latest code
+echo "Pulling latest code..."
+git stash
+git checkout main
+git pull origin main
 
-if [ "$(docker ps -aq -f name=$APP_NAME)" ]; then
-    echo "Removing old container..."
-    docker rm $APP_NAME
-fi
+# Step 2: Install dependencies
+echo "Installing dependencies..."
+npm install
 
-# ==== STEP 2: Remove old image (optional) ====
-if [ "$(docker images -q $IMAGE_NAME)" ]; then
-    echo "Removing old image..."
-    docker rmi $IMAGE_NAME
-fi
+# Step 3: Build the app
+echo "Building Next.js app..."
+npm run build
 
-# ==== STEP 3: Build new Docker image ====
-echo "Building new Docker image..."
-docker build -t $IMAGE_NAME .
+# Step 4: Start/Restart with PM2
+echo "Starting $APP_NAME with PM2 on port $PORT..."
+pm2 start npm --name "$APP_NAME" -- run start -- -p $PORT || pm2 restart "$APP_NAME"
 
-if [ $? -ne 0 ]; then
-    echo "❌ Build failed. Exiting."
-    exit 1
-fi
+# Step 5: Save PM2 process list for startup
+pm2 save
 
-# ==== STEP 4: Run new container ====
-echo
+echo "Deployment completed successfully!"
+pm2 status "$APP_NAME"
