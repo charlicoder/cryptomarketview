@@ -1,13 +1,23 @@
-'use client'; // This directive is necessary for client components that use hooks like useRouter
+'use client'; // Required for client components that use hooks
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import Icon from '@/components/dashboard/AppIcon';
 import { Button } from './button';
-import { useRouter, usePathname } from 'next/navigation'; // Removed useSearchParams
+import { useRouter, usePathname } from 'next/navigation';
 
-const Header = ({ onSearch, searchQuery = '', className = '' }) => {
-    const router = useRouter(); // Use useRouter hook from next/navigation
-    const pathname = usePathname(); // Use usePathname hook for current path
+interface HeaderProps {
+    onSearch?: (query: string) => void;
+    searchQuery?: string;
+    className?: string;
+}
+
+const Header: React.FC<HeaderProps> = ({
+    onSearch,
+    searchQuery = '',
+    className = '',
+}) => {
+    const router = useRouter();
+    const pathname = usePathname();
 
     const [isDark, setIsDark] = useState(false);
     const [searchValue, setSearchValue] = useState(searchQuery);
@@ -19,7 +29,7 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
         const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
         setIsDark(shouldBeDark);
-        document.documentElement?.classList?.toggle('dark', shouldBeDark);
+        document.documentElement.classList.toggle('dark', shouldBeDark);
     }, []);
 
     useEffect(() => {
@@ -30,21 +40,19 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
         const newTheme = !isDark;
         setIsDark(newTheme);
         localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-        document.documentElement?.classList?.toggle('dark', newTheme);
+        document.documentElement.classList.toggle('dark', newTheme);
     };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e?.target?.value;
+    const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
         setSearchValue(value);
-        if (onSearch) {
-            onSearch(value);
-        }
+        onSearch?.(value);
     };
 
-    const handleSearchSubmit = (e: React.FormEvent) => {
-        e?.preventDefault();
-        if (searchValue?.trim() && pathname !== '/search-results') {
-            router.push(`/search-results?query=${searchValue.trim()}`);
+    const handleSearchSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        if (searchValue.trim() && pathname !== '/search-results') {
+            router.push(`/search-results?query=${encodeURIComponent(searchValue.trim())}`);
         }
         setIsMobileSearchOpen(false);
     };
@@ -52,30 +60,28 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
     const handleLogoClick = () => {
         router.push('/cryptocurrency-dashboard');
         setSearchValue('');
-        if (onSearch) {
-            onSearch('');
-        }
+        onSearch?.('');
     };
 
     const toggleMobileSearch = () => {
-        setIsMobileSearchOpen(!isMobileSearchOpen);
+        setIsMobileSearchOpen((prev) => !prev);
     };
 
     const navigationItems = [
         {
             label: 'Dashboard',
             path: '/cryptocurrency-dashboard',
-            icon: 'BarChart3'
-        }
+            icon: 'BarChart3',
+        },
     ];
 
-    const isActivePath = (path: string) => {
-        return pathname === path;
-    };
+    const isActivePath = (path: string) => pathname === path;
 
     return (
         <>
-            <header className={`fixed top-0 left-0 right-0 z-50 glass border-b border-border/50 ${className}`}>
+            <header
+                className={`fixed top-0 left-0 right-0 z-50 glass border-b border-border/50 ${className}`}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
@@ -97,17 +103,17 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
                         <div className="hidden md:flex items-center space-x-6">
                             {/* Navigation Items */}
                             <nav className="flex items-center space-x-1">
-                                {navigationItems?.map((item) => (
+                                {navigationItems.map((item) => (
                                     <button
-                                        key={item?.path}
-                                        onClick={() => router.push(item?.path)}
-                                        className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 focus-ring ${isActivePath(item?.path)
-                                            ? 'bg-accent text-accent-foreground shadow-elevation-1'
-                                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                                        key={item.path}
+                                        onClick={() => router.push(item.path)}
+                                        className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 focus-ring ${isActivePath(item.path)
+                                                ? 'bg-accent text-accent-foreground shadow-elevation-1'
+                                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                                             }`}
                                     >
-                                        <Icon name={item?.icon} size={16} />
-                                        <span>{item?.label}</span>
+                                        <Icon name={item.icon} size={16} />
+                                        <span>{item.label}</span>
                                     </button>
                                 ))}
                             </nav>
@@ -175,7 +181,10 @@ const Header = ({ onSearch, searchQuery = '', className = '' }) => {
             {/* Mobile Search Overlay */}
             {isMobileSearchOpen && (
                 <div className="fixed inset-0 z-50 md:hidden">
-                    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={toggleMobileSearch} />
+                    <div
+                        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+                        onClick={toggleMobileSearch}
+                    />
                     <div className="relative bg-card border-b border-border p-4">
                         <form onSubmit={handleSearchSubmit} className="flex items-center space-x-3">
                             <div className="flex-1 relative">

@@ -1,42 +1,50 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Search, Sun, Moon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useAppDispatch, useAppSelector } from '@/lib/hooks'
-import { toggleTheme } from '@/store/slices/themeSlice'
-import Link from 'next/link'
+import React, { useState, FormEvent } from 'react';
+import { Search, Sun, Moon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { toggleTheme } from '@/store/slices/themeSlice';
+import Link from 'next/link';
 
 interface HeaderProps {
-  onSearch: (query: string) => void
+  onSearch: (query: string) => void;
 }
 
 export default function Header({ onSearch }: HeaderProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const dispatch = useAppDispatch()
-  const isDark = useAppSelector((state) => state.theme.isDark)
+  const [searchQuery, setSearchQuery] = useState('');
+  const dispatch = useAppDispatch();
+  const isDark = useAppSelector((state) => state.theme.isDark);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSearch(searchQuery)
-  }
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch(searchQuery);
+  };
 
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Logo + Title */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">CV</span>
             </div>
-            <span className="text-xl font-semibold text-gray-900 dark:text-white">CryptoView</span>
+            <span className="text-xl font-semibold text-gray-900 dark:text-white">
+              CryptoView
+            </span>
           </div>
-          <Link href={"/dashboard"} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
+
+          <Link
+            href="/dashboard"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
             Dashboard
           </Link>
         </div>
 
+        {/* Search + Theme Toggle */}
         <div className="flex items-center space-x-4">
           <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -48,6 +56,7 @@ export default function Header({ onSearch }: HeaderProps) {
               className="pl-10 w-64 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600"
             />
           </form>
+
           <Button
             variant="ghost"
             size="sm"
@@ -59,5 +68,5 @@ export default function Header({ onSearch }: HeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }
